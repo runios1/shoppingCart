@@ -1,8 +1,27 @@
+import { useEffect, useState } from "react";
+import ProductCard from "./ProductCard/ProductCard";
+
 export default function Store() {
+  const [items, setItems] = useState([]);
+  useEffect(() => {
+    fetch("https://fakestoreapi.com/products")
+      .then((response) => response.json())
+      .then((data) => setItems(data));
+  }, []);
+
   return (
     <div>
       <h1>Store</h1>
-      <p>This is the store page where products will be displayed.</p>
+      <ul>
+        {items.map((item) => (
+          <ProductCard
+            key={item.id}
+            title={item.title}
+            price={item.price}
+            image={item.image}
+          />
+        ))}
+      </ul>
     </div>
   );
 }
