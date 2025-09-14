@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router";
+import ProductCard from "../ProductCard/ProductCard";
 
 export default function Store() {
   const [cart, setCart] = useOutletContext();
@@ -22,12 +23,16 @@ export default function Store() {
       <h1>Store</h1>
       <ul>
         {items.map((item) => (
-          <div key={item.id}>
-            <img src={item.image} />
-            <h3>{item.title}</h3>
-            <p>{item.price}</p>
-            <button onClick={() => handleAddToCart(item)}>Add to Cart</button>
-          </div>
+          <ProductCard key={item.id} {...item}>
+            <button
+              onClick={() =>
+                handleAddToCart({ productId: item.id, quantity: 1 })
+              }
+            >
+              Add to Cart
+            </button>
+            {/* FIXME quantity is a placeholder here */}
+          </ProductCard>
         ))}
       </ul>
     </div>
