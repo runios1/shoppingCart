@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { House, Store, ShoppingCart } from "lucide-react";
 
-export default function NavigationBar({ cartItemNumber }) {
+export default function NavigationBar({ cartItemCount }) {
   return (
     <>
       <Link to="/">
@@ -12,7 +12,7 @@ export default function NavigationBar({ cartItemNumber }) {
       </Link>
       <Link to="/cart">
         <ShoppingCart />
-        {cartItemNumber > 0 && <span>{cartItemNumber}</span>}
+        {cartItemCount > 0 && <span>{cartItemCount}</span>}
       </Link>
     </>
   );

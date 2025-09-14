@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 function App() {
   const cartID = 1;
 
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -17,7 +17,7 @@ function App() {
         }
         return response.json();
       })
-      .then((data) => setCart(data.products))
+      .then((data) => setCart(data))
       .catch((error) => setError(error))
       .finally(() => setLoading(false));
   }, []);
@@ -27,9 +27,9 @@ function App() {
 
   return (
     <>
-      <NavigationBar cartItemNumber={cart.length} />
+      <NavigationBar cartItemCount={cart.products.length} />
       <main>
-        <Outlet />
+        <Outlet context={[cart, setCart]} />
       </main>
     </>
   );
