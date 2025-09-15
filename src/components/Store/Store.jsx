@@ -21,20 +21,16 @@ export default function Store() {
   return (
     <div>
       <h1>Store</h1>
-      <ul>
-        {items.map((item) => (
-          <ProductCard key={item.id} {...item}>
-            <button
-              onClick={() =>
-                handleAddToCart({ productId: item.id, quantity: 1 })
-              }
-            >
-              Add to Cart
-            </button>
-            {/* FIXME quantity is a placeholder here */}
-          </ProductCard>
-        ))}
-      </ul>
+      {items.map((item) => (
+        <ProductCard key={item.id} {...item}>
+          <button
+            onClick={() => handleAddToCart({ productId: item.id, quantity: 1 })}
+          >
+            Add to Cart
+          </button>
+          {/* FIXME quantity is a placeholder here */}
+        </ProductCard>
+      ))}
     </div>
   );
 }

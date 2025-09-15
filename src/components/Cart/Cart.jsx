@@ -5,7 +5,6 @@ import ProductCard from "../ProductCard/ProductCard";
 export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const [cart] = useOutletContext();
-  console.log(cart);
 
   useEffect(() => {
     const fetchPromises = cart.products.map((item) =>
@@ -21,9 +20,11 @@ export default function Cart() {
   return (
     <div>
       <h1>Shopping Cart</h1>
-      {cartItems.map((item) => (
-        <ProductCard key={item.id} {...item} />
-      ))}
+      <ul>
+        {cartItems.map((item) => (
+          <ProductCard key={item.id} {...item} />
+        ))}
+      </ul>
     </div>
   );
 }
