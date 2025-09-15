@@ -8,23 +8,32 @@ export default function Cart() {
 
   useEffect(() => {
     const fetchPromises = cart.products.map((item) =>
-      fetch(`https://fakestoreapi.com/products/${item.productId}`).then(
-        (response) => response.json()
-      )
+      fetch(`https://fakestoreapi.com/products/${item.productId}`)
+        .then((response) => response.json())
+        .then((response) => ({ ...response, quantity: item.quantity }))
     );
     Promise.all(fetchPromises).then((allItems) => {
       setCartItems(allItems);
     });
   }, []);
 
+  function calculateTotal() {
+    let total = 0;
+    cartItems.map((item) => (total += item.price * item.quantity));
+    return total;
+  }
+
   return (
     <div>
       <h1>Shopping Cart</h1>
-      <ul>
+      <div>
         {cartItems.map((item) => (
-          <ProductCard key={item.id} {...item} />
+          <ProductCard key={item.id} {...item}>
+            <p>Qty: {item.quantity}</p>
+          </ProductCard>
         ))}
-      </ul>
+      </div>
+      <h3>Your total is: {calculateTotal()} USD</h3>
     </div>
   );
 }
