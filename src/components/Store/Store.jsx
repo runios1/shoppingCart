@@ -12,10 +12,18 @@ export default function Store() {
   }, []);
 
   function handleAddToCart(item) {
-    setCart({
+    const newCart = {
       ...cart,
       products: [...cart.products, item],
-    });
+    };
+    setCart(newCart);
+    fetch(`https://fakestoreapi.com/carts/${cart.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newCart),
+    })
+      .then((response) => response.json())
+      .then((response) => console.log(response));
   }
 
   return (
