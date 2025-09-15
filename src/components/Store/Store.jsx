@@ -11,11 +11,29 @@ export default function Store() {
       .then((data) => setItems(data));
   }, []);
 
-  function handleAddToCart(item) {
-    const newCart = {
-      ...cart,
-      products: [...cart.products, item],
-    };
+  function handleAddToCart(itemId) {
+    const itemIndex = cart.products.findIndex(
+      (product) => product.productId === itemId
+    );
+    if (itemIndex === -1)
+      updateCart({
+        ...cart,
+        products: [...cart.products, { productId: itemId, quantity: 1 }],
+      });
+    else {
+      const updatedProducts = [...cart.products];
+      updatedProducts[itemIndex] = {
+        ...updatedProducts[itemIndex],
+        quantity: updatedProducts[itemIndex].quantity + 1,
+      };
+      updateCart({
+        ...cart,
+        products: updatedProducts,
+      });
+    }
+  }
+
+  function updateCart(newCart) {
     setCart(newCart);
     fetch(`https://fakestoreapi.com/carts/${cart.id}`, {
       method: "PUT",
@@ -32,12 +50,11 @@ export default function Store() {
       {items.map((item) => (
         <ProductCard key={item.id} {...item}>
           <button
-            onClick={() => handleAddToCart({ productId: item.id, quantity: 1 })}
+            onClick={() => handleAddToCart(item.id)}
             data-testid={"Add to Cart " + item.id}
           >
             Add to Cart
           </button>
-          {/* FIXME quantity is a placeholder here */}
         </ProductCard>
       ))}
     </div>
