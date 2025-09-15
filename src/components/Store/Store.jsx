@@ -25,6 +25,7 @@ export default function Store() {
         <ProductCard key={item.id} {...item}>
           <button
             onClick={() => handleAddToCart({ productId: item.id, quantity: 1 })}
+            data-testid={"Add to Cart " + item.id}
           >
             Add to Cart
           </button>
