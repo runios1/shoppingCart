@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router";
 import ProductCard from "../ProductCard/ProductCard";
+import { updateCart } from "../../utils/cartFunctions";
 
 export default function Store() {
   const [cart, setCart] = useOutletContext();
@@ -16,7 +17,7 @@ export default function Store() {
       (product) => product.productId === itemId
     );
     if (itemIndex === -1)
-      updateCart({
+      updateCart(cart.id, setCart, {
         ...cart,
         products: [...cart.products, { productId: itemId, quantity: 1 }],
       });
@@ -26,22 +27,11 @@ export default function Store() {
         ...updatedProducts[itemIndex],
         quantity: updatedProducts[itemIndex].quantity + 1,
       };
-      updateCart({
+      updateCart(cart.id, setCart, {
         ...cart,
         products: updatedProducts,
       });
     }
-  }
-
-  function updateCart(newCart) {
-    setCart(newCart);
-    fetch(`https://fakestoreapi.com/carts/${cart.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newCart),
-    })
-      .then((response) => response.json())
-      .then((response) => console.log(response));
   }
 
   return (
