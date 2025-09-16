@@ -6,16 +6,26 @@ import { updateCart } from "../../utils/cartFunctions";
 export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const [cart, setCart] = useOutletContext();
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPromises = cart.products.map((item) =>
       fetch(`https://fakestoreapi.com/products/${item.productId}`)
-        .then((response) => response.json())
+        .then((response) => {
+          if (response.status >= 400) {
+            throw new Error("server error");
+          }
+          return response.json();
+        })
         .then((response) => ({ ...response, quantity: item.quantity }))
+        .catch((error) => setError(error))
     );
-    Promise.all(fetchPromises).then((allItems) => {
-      setCartItems(allItems);
-    });
+    Promise.all(fetchPromises)
+      .then((allItems) => {
+        setCartItems(allItems);
+      })
+      .finally(() => setLoading(false));
   }, [cart.products]);
 
   function calculateTotal() {
@@ -42,6 +52,9 @@ export default function Cart() {
       products: cart.products.filter((product) => product.productId !== itemID),
     });
   }
+
+  if (loading) return <p>Loading in progress</p>;
+  if (error) return <p>Network error, try again later</p>;
 
   return (
     <div>

@@ -6,10 +6,19 @@ import { updateCart } from "../../utils/cartFunctions";
 export default function Store() {
   const [cart, setCart] = useOutletContext();
   const [items, setItems] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     fetch("https://fakestoreapi.com/products")
-      .then((response) => response.json())
-      .then((data) => setItems(data));
+      .then((response) => {
+        if (response.status >= 400) {
+          throw new Error("server error");
+        }
+        return response.json();
+      })
+      .then((data) => setItems(data))
+      .catch((error) => setError(error))
+      .finally(() => setLoading(false));
   }, []);
 
   function handleAddToCart(itemId) {
@@ -33,6 +42,9 @@ export default function Store() {
       });
     }
   }
+
+  if (loading) return <p>Loading in progress</p>;
+  if (error) return <p>Network error, try again later</p>;
 
   return (
     <div>
