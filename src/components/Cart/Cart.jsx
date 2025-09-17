@@ -44,6 +44,10 @@ export default function Cart() {
       quantity: newQuantity,
     };
     updateCart(cart.id, setCart, { ...cart, products: updatedProducts });
+    // Optimistic UI update
+    setCartItems((prev) =>
+      prev.map((p) => (p.id === itemID ? { ...p, quantity: newQuantity } : p))
+    );
   }
 
   function deleteItem(itemID) {
@@ -51,6 +55,8 @@ export default function Cart() {
       ...cart,
       products: cart.products.filter((product) => product.productId !== itemID),
     });
+    // Optimistic UI update
+    setCartItems((prev) => prev.filter((p) => p.id !== itemID));
   }
 
   if (loading) return <p>Loading in progress</p>;
@@ -60,26 +66,34 @@ export default function Cart() {
     <div>
       <h1>Shopping Cart</h1>
       <div>
-        {cartItems.map((item) => (
-          <ProductCard key={item.id} {...item}>
-            <label>
-              Qty:
-              <input
-                type="number"
-                min="1"
-                max="10"
-                value={item.quantity}
-                onChange={(e) =>
-                  changeItemQuantity(
-                    item.id,
-                    Math.max(1, Math.min(10, Number(e.target.value)))
-                  )
-                }
-              />
-            </label>
-            <button onClick={() => deleteItem(item.id)}>Delete</button>
-          </ProductCard>
-        ))}
+        {cartItems.length === 0
+          ? "Go to the store tab to add items to your cart!"
+          : cartItems.map((item) => (
+              <ProductCard key={item.id} {...item}>
+                <label>
+                  Qty:
+                  <input
+                    type="number"
+                    min="1"
+                    max="10"
+                    data-testid={"qty-" + item.id}
+                    value={item.quantity}
+                    onChange={(e) =>
+                      changeItemQuantity(
+                        item.id,
+                        Math.max(1, Math.min(10, Number(e.target.value)))
+                      )
+                    }
+                  />
+                </label>
+                <button
+                  data-testid={"delete-" + item.id}
+                  onClick={() => deleteItem(item.id)}
+                >
+                  Delete
+                </button>
+              </ProductCard>
+            ))}
       </div>
       <h3>Your total is: {calculateTotal()} USD</h3>
     </div>
